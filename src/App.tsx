@@ -4,17 +4,18 @@ import Nav from "./components/Nav"
 import Home from "./pages/Home"
 import SavedRepos from "./pages/SavedRepos"
 
-const [username, setUsername] = createSignal('ahnafgibran')
+const [username, setUsername] = createSignal("ahnafgibran")
 const [repos, setRepos] = createSignal([])
 
-const App: Component = () => {
-  createEffect(async () => {
-    const res = await fetch(`https://api.github.com/users/${username()}/repos?sort=created`)
-    const data = await res.json()
-    setRepos(data)
-    console.log(data)
-  })
+createEffect(async () => {
+  const res = await fetch(
+    `https://api.github.com/users/${username()}/repos?sort=created`
+  )
+  const data = await res.json()
+  setRepos(data)
+})
 
+const App: Component = () => {
   return (
     <div>
       <Nav />
@@ -26,6 +27,6 @@ const App: Component = () => {
   )
 }
 
-export {username, setUsername, repos}
+export { username, setUsername, repos }
 
 export default App

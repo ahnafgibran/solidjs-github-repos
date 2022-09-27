@@ -1,13 +1,24 @@
-import { Component, For, JSX } from "solid-js"
+import { Component, createEffect, createSignal, For, JSX } from "solid-js"
 import { repos, setUsername, username } from "../App"
 import RepoCard, { Repo } from "../components/RepoCard"
+
+const [currentPage, setCurrentPage] = createSignal(1)
+const [postPerPage, setPostPerPage] = createSignal(5)
+const [currentRepos, setCurrentRepos] = createSignal([])
 
 const Home: Component = () => {
   let inputRef: HTMLInputElement
 
+  createEffect(() => {
+    const indexOfLastRepo = currentPage() * postPerPage()
+    const indexOfFirstRepo = indexOfLastRepo - postPerPage()
+    setCurrentRepos(repos()?.slice(indexOfFirstRepo, indexOfLastRepo))
+  })
+
   const submitForm = (e: Event) => {
     e.preventDefault()
     setUsername(inputRef?.value)
+    setCurrentPage(1)
   }
 
   return (
@@ -26,7 +37,31 @@ const Home: Component = () => {
         </button>
       </form>
 
-      <For each={repos()}>{(repo: Repo) => <RepoCard repo={repo} />}</For>
+      <For each={currentRepos()}>
+        {(repo: Repo) => <RepoCard repo={repo} />}
+      </For>
+      <div class="flex items-center gap-2">
+        <For
+          each={Array.from(
+            { length: Math.ceil(repos().length / postPerPage()) },
+            (_, i) => i + 1
+          )}
+        >
+          {(page) => (
+            <button
+              onClick={() => {
+                setCurrentPage(page)
+                console.log(currentPage())
+              }}
+              class={`px-1 ${
+                currentPage() === page ? "bg-blue-600" : "bg-blue-400"
+              }  rounded-sm text-white`}
+            >
+              {page}
+            </button>
+          )}
+        </For>
+      </div>
     </div>
   )
 }
