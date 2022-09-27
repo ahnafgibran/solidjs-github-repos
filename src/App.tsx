@@ -12,6 +12,7 @@ const App: Component = () => {
     const res = await fetch(`https://api.github.com/users/${username()}/repos?sort=created`)
     const data = await res.json()
     setRepos(data)
+    console.log(data)
   })
 
   return (

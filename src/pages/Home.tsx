@@ -1,10 +1,11 @@
-import { Component, JSX } from "solid-js"
+import { Component, For, JSX } from "solid-js"
 import { repos, setUsername, username } from "../App"
+import RepoCard, { Repo } from "../components/RepoCard"
 
 const Home: Component = () => {
-  let inputRef: any
+  let inputRef: HTMLInputElement
 
-  const submitForm = (e: any) => {
+  const submitForm = (e: Event) => {
     e.preventDefault()
     setUsername(inputRef?.value)
   }
@@ -13,7 +14,7 @@ const Home: Component = () => {
     <div class="m-5">
       <form class="flex items-center w-fit gap-4" onSubmit={submitForm}>
         <input
-          ref={inputRef}
+          ref={inputRef!}
           type="text"
           class="border border-black px-4 py-2 rounded-md outline-none"
         />
@@ -24,7 +25,8 @@ const Home: Component = () => {
           Search
         </button>
       </form>
-      <h2>{username()}</h2>
+
+      <For each={repos()}>{(repo: Repo) => <RepoCard repo={repo} />}</For>
     </div>
   )
 }
